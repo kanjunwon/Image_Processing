@@ -1828,7 +1828,7 @@ void CImagePro20210797View::OnGeometryWarping()
 
 void CImagePro20210797View::OnGeometryMorphing()
 {
-	// 모핑 채우기
+	// 진짜 이거 어케하냐??
 }
 
 CPoint mpos_start, mpos_end;
