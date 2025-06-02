@@ -33,7 +33,6 @@ CImagePro20210797Doc::CImagePro20210797Doc() noexcept
 	InputImage = NULL;
 	InputImage2 = NULL;
 	ResultImage = NULL;
-
 	gResultImage = NULL;	// 기하학적 처리
 }
 

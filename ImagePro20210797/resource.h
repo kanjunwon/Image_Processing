@@ -103,13 +103,16 @@
 #define ID_GEOMETRY_MORPHING            32849
 #define ID_32850                        32850
 #define ID_AVI_VIEW                     32851
+#define ID_32852                        32852
+#define ID_32853                        32853
+#define ID_GEOMERTY_MORPHING            32854
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        313
-#define _APS_NEXT_COMMAND_VALUE         32852
+#define _APS_NEXT_COMMAND_VALUE         32855
 #define _APS_NEXT_CONTROL_VALUE         1021
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

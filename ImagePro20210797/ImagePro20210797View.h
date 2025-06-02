@@ -77,6 +77,8 @@ public:
 	afx_msg void OnGeometryFlip();
 	afx_msg void OnGeometryWarping();
 	afx_msg void OnGeometryMorphing();
+	afx_msg void OnGeometryMorphingWithLoad();
+	void MorphImages(double alpha);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnAviView();

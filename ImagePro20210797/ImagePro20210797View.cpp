@@ -60,7 +60,7 @@ BEGIN_MESSAGE_MAP(CImagePro20210797View, CScrollView)
 	ON_COMMAND(ID_GEOMETRY_MIRROR, &CImagePro20210797View::OnGeometryMirror)
 	ON_COMMAND(ID_GEOMETRY_FLIP, &CImagePro20210797View::OnGeometryFlip)
 	ON_COMMAND(ID_GEOMETRY_WARPING, &CImagePro20210797View::OnGeometryWarping)
-	ON_COMMAND(ID_GEOMETRY_MORPHING, &CImagePro20210797View::OnGeometryMorphing)
+	ON_COMMAND(ID_GEOMERTY_MORPHING, &CImagePro20210797View::OnGeometryMorphingWithLoad)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
 	ON_COMMAND(ID_AVI_VIEW, &CImagePro20210797View::OnAviView)
@@ -141,9 +141,9 @@ void CImagePro20210797View::OnDraw(CDC* pDC)
 	{
 		if (pDoc->Depth == 1)
 		{
-		for (y = 0; y < pDoc->lmageHeight; y++)
-			for (x = 0; x < pDoc->lmageWidth; x++)
-				pDC->SetPixel(x + (pDoc->lmageWidth + 20) * 2, y, RGB(pDoc->InputImage2[y][x], pDoc->InputImage2[y][x], pDoc->InputImage2[y][x]));
+			for (y = 0; y < pDoc->lmageHeight; y++)
+				for (x = 0; x < pDoc->lmageWidth; x++)
+					pDC->SetPixel(x + (pDoc->lmageWidth + 20) * 2, y, RGB(pDoc->InputImage2[y][x], pDoc->InputImage2[y][x], pDoc->InputImage2[y][x]));
 		}
 		else
 		{
@@ -1826,10 +1826,74 @@ void CImagePro20210797View::OnGeometryWarping()
 	Invalidate();
 }
 
-void CImagePro20210797View::OnGeometryMorphing()
+void CImagePro20210797View::OnGeometryMorphingWithLoad()
 {
-	// 모핑 채우기
+	CImagePro20210797Doc* pDoc = GetDocument();
+
+	CFile file;
+	CFileDialog dlg(TRUE);
+
+	if (dlg.DoModal() == IDOK)
+	{
+		file.Open(dlg.GetPathName(), CFile::modeRead);
+		CArchive ar(&file, CArchive::load);
+		pDoc->LoadSecondImageFile(ar);
+		file.Close();
+
+		// 이미지 크기와 Depth 체크
+		if (pDoc->lmageWidth != pDoc->lmageWidth || pDoc->lmageHeight != pDoc->lmageHeight)
+		{
+			AfxMessageBox(_T("두 이미지 크기가 다릅니다!"));
+			return;
+		}
+		if (pDoc->Depth != pDoc->Depth)
+		{
+			AfxMessageBox(_T("두 이미지 색상 깊이가 다릅니다!"));
+			return;
+		}
+
+		// alpha 값 고정 0.5 (필요 시 조절 가능)
+		double alpha = 0.5;
+		MorphImages(alpha);
+	}
+
+	Invalidate();
 }
+
+void CImagePro20210797View::MorphImages(double alpha)
+{
+	CImagePro20210797Doc* pDoc = GetDocument();
+
+	int width = pDoc->lmageWidth;
+	int height = pDoc->lmageHeight;
+	int depth = pDoc->Depth;
+
+	// 선형 보간으로 모핑 처리 (간단한 모핑 예제)
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			if (depth == 1)
+			{
+				int val = (int)((1.0 - alpha) * pDoc->InputImage[y][x] + alpha * pDoc->InputImage2[y][x]);
+				if (val > 255) val = 255;
+				else if (val < 0) val = 0;
+				pDoc->ResultImage[y][x] = (unsigned char)val;
+			}
+			else if (depth == 3)
+			{
+				for (int c = 0; c < 3; c++)
+				{
+					int val = (int)((1.0 - alpha) * pDoc->InputImage[y][x * 3 + c] + alpha * pDoc->InputImage2[y][x * 3 + c]);
+					if (val > 255) val = 255;
+					else if (val < 0) val = 0;
+					pDoc->ResultImage[y][x * 3 + c] = (unsigned char)val;
+				}
+			}
+		}
+	}
+}
+
 
 CPoint mpos_start, mpos_end;
 

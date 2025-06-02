@@ -50,6 +50,8 @@ public:
 	unsigned char** InputImage;
 	unsigned char** InputImage2;
 	unsigned char** ResultImage;
+	unsigned char** TargetImage;
+
 	
 	int lmageWidth;			// 가로 크기
 	int lmageHeight;		// 세로 크기
